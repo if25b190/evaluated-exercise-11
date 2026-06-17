@@ -12,13 +12,14 @@ const posthog = new PostHog(process.env.POSTHOG_API_KEY!, {
 });
 
 function getDistinctId(request: FastifyRequest): string {
-  const header = request.headers["X-POSTHOG-DISTINCT-ID"];
+  const header = request.headers["x-posthog-distinct-id"];
   if (typeof header === "string" && header) return header;
   return request.ip || "anonymous";
 }
 
 function getSessionId(request: FastifyRequest): string {
-  const header = request.headers["X-POSTHOG-SESSION-ID"];
+  const header = request.headers["x-posthog-session-id"];
+  console.log("Session ID header:", request.headers);
   if (typeof header === "string" && header) return header;
   return request.ip || "anonymous";
 }
@@ -33,7 +34,7 @@ function trackPosthog(
     distinctId: getDistinctId(request),
     event: event,
     properties: {
-      '$sessionId': getSessionId(request),
+      '$session_id': getSessionId(request),
       ...properties
     },
     sendFeatureFlags: sendFeatureFlags,

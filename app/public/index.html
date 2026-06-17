@@ -52,7 +52,6 @@
             api_host: 'https://eu.i.posthog.com',
             person_profiles: 'identified_only' // or 'always' to create profiles for anonymous users as well
         });
-        const posthog_session_id = posthog.get_session_id()
 
         posthog.onFeatureFlags(function () {
             // feature flags should be available at this point
@@ -62,7 +61,7 @@
                 postForm.style.display = 'none';
             }
             if (posthog.getFeatureFlag('experiment-user-button-style') === 'test') {
-                userButton.style.backgroundColor = 'blue'; // default style
+                userButton.style.backgroundColor = 'blue';
             } else {
                 userButton.style.backgroundColor = 'green';
             }
@@ -76,7 +75,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'X-POSTHOG-DISTINCT-ID': currentUser || posthog.get_distinct_id(), // Use current user or PostHog distinct ID for tracking
-                        'X-POSTHOG-SESSION-ID': posthog_session_id
+                        'X-POSTHOG-SESSION-ID': posthog.get_session_id()
                     },
                     body: JSON.stringify(formData)
                 });
@@ -100,7 +99,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'X-POSTHOG-DISTINCT-ID': currentUser || posthog.get_distinct_id(), // Use current user or PostHog distinct ID for tracking
-                        'X-POSTHOG-SESSION-ID': posthog_session_id
+                        'X-POSTHOG-SESSION-ID': posthog.get_session_id()
                     },
                     body: JSON.stringify(formData)
                 });
