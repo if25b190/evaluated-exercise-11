@@ -41,6 +41,8 @@
         const postTitleInput = document.getElementById('post-title');
         const postContentInput = document.getElementById('post-content');
 
+        const userButton = document.getElementById('add-user');
+
         let currentUser = Number(localStorage.getItem('currentUser')); // Track the current user
 
         document.getElementById('current-user').textContent = currentUser ? `Current User ID: ${currentUser}` : 'No user logged in.';
@@ -58,6 +60,11 @@
                 postForm.style.display = 'block';
             } else {
                 postForm.style.display = 'none';
+            }
+            if (posthog.getFeatureFlag('experiment-user-button-style') === 'test') {
+                userButton.style.backgroundColor = 'blue'; // default style
+            } else {
+                userButton.style.backgroundColor = 'green';
             }
         });
 
