@@ -99,7 +99,7 @@ server.post(
         trackPosthog(request, "user_creation_failed", {
           user_name: name,
           user_email: email,
-        });
+        }, true);
         return reply.status(400).send({
           error: "Invalid email",
         });
@@ -115,7 +115,7 @@ server.post(
         user_id: user.id,
         user_name: user.name,
         user_email: user.email,
-      });
+      }, true);
       return reply.status(201).send({ user });
     } catch (error: any) {
       posthog.captureException(error, getDistinctId(request), { endpoint: 'POST /api/v1/users' });
