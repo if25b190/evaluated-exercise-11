@@ -33,12 +33,15 @@
 
     <script>
         const USER_API_BASE = '/api/v1/users';
+        const POST_API_BASE = '/api/v1/posts';
         const userNameInput = document.getElementById('user-input');
         const userEmailInput = document.getElementById('email-input');
         const userForm = document.getElementById('user-form');
         const postForm = document.getElementById('post-form');
+        const postTitleInput = document.getElementById('post-title');
+        const postContentInput = document.getElementById('post-content');
 
-        let currentUser = localStorage.getItem('currentUser'); // Track the current user
+        let currentUser = Number(localStorage.getItem('currentUser')); // Track the current user
 
         document.getElementById('current-user').textContent = currentUser ? `Current User ID: ${currentUser}` : 'No user logged in.';
 
@@ -65,6 +68,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-POSTHOG-DISTINCT-ID': currentUser || posthog.get_distinct_id(), // Use current user or PostHog distinct ID for tracking
                         'X-POSTHOG-SESSION-ID': posthog_session_id
                     },
                     body: JSON.stringify(formData)
@@ -81,6 +85,26 @@
             }
         }
 
+        // Create a new Post (POST)
+        async function createPost(formData) {
+            try {
+                const response = await fetch(POST_API_BASE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-POSTHOG-DISTINCT-ID': currentUser || posthog.get_distinct_id(), // Use current user or PostHog distinct ID for tracking
+                        'X-POSTHOG-SESSION-ID': posthog_session_id
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) {
+                    const { error } = await response.json();
+                    alert(error);
+                }
+            } catch (error) {
+                console.error('Error creating post:', error);
+            }
+        }
         // Login user (GET)
         // async function loginUser(email) {
         //     try {
@@ -109,6 +133,16 @@
             const email = userEmailInput.value;
             if (name && email) {
                 createUser({ name, email });
+            }
+        });
+
+        postForm.addEventListener('submit', event => {
+            event.preventDefault();
+            const title = postTitleInput.value;
+            const content = postContentInput.value;
+            const userId = currentUser;
+            if (title && userId) {
+                createPost({ title, content, userId });
             }
         });
 
