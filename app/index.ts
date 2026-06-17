@@ -2,6 +2,7 @@ import fastify, { FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { isValidEmail } from "./services/isValidEmail";
 import { PostHog } from "posthog-node";
+import fastifyStatic from '@fastify/static';
 
 const prisma = new PrismaClient();
 
@@ -35,6 +36,14 @@ const server = fastify();
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || "127.0.0.1";
 
+
+// serve static files
+// from the public folder
+// at the root path "/"
+server.register(fastifyStatic, {
+  root: `${__dirname}/public`,
+  prefix: '/',
+});
 /**
  * USERS CRUD
  */
